@@ -1,0 +1,56 @@
+name: hospital-medicine-scheduler
+version: "1.0.0"
+description: >
+  A real-world hospital medicine scheduling environment where an AI agent
+  acts as a nurse, administering correct medicines to patients at the right
+  time while avoiding dangerous allergic reactions.
+
+tags:
+  - healthcare
+  - scheduling
+  - safety-critical
+  - real-world
+
+tasks:
+  - id: task_easy
+    name: Basic Medicine Rounds
+    difficulty: easy
+    success_threshold: 0.6
+
+  - id: task_medium
+    name: Multi-Patient Allergy-Aware Scheduling
+    difficulty: medium
+    success_threshold: 0.6
+
+  - id: task_hard
+    name: Emergency Ward Crisis Management
+    difficulty: hard
+    success_threshold: 0.5
+
+observation_space:
+  current_time: "int — hour of the day (7–13)"
+  patients: "list — patient records with id, name, illness, medicine_needed, dose_time, allergy"
+  medicine_given: "dict — patient_id → bool, whether medicine was administered"
+  total_reward: "float — cumulative reward this episode"
+  steps_taken: "int — number of actions taken so far"
+
+action_space:
+  patient_id: "int — which patient to give medicine to"
+  medicine: "str — which medicine to administer"
+
+reward:
+  perfect_timing: +1.0
+  one_hour_off: +0.5
+  late_dose: +0.1
+  wrong_medicine: -1.0
+  allergy_violation: -2.0
+  duplicate_dose: -0.5
+  invalid_patient: -1.0
+
+endpoints:
+  reset: POST /reset
+  step: POST /step
+  state: GET /state
+  tasks: GET /tasks
+  grader: POST /grader
+  baseline: GET /baseline
